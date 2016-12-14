@@ -1,0 +1,18 @@
+{
+  "name": "node_scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "cheerio-req": "^1.1.2",
+    "jQuery": "^1.7.4",
+    "request": "^2.79.0",
+    "tinyreq": "^3.1.4"
+  }
+}
