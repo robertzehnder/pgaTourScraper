@@ -1,6 +1,7 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var fs = require('fs');
+var rp = require('request-promise');
 var $ = require('jQuery');
 require("jsdom").env("", function(err, window) {
     if (err) {

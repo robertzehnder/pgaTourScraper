@@ -1,28 +1,111 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var fs = require('fs');
-
+var rp = require('request-promise');
+let http = require('http')
+let axios = require('axios')
+// var $ = require('jQuery');
 var url = 'http://www.pgatour.com/stats/stat.02671.html'
 var years = []
+fakearray = []
 
-request(url, function(error, response, body) {
-  // if(error) {
-  //   console.log("Error: " + error);
-  // }
-  // console.log("Status code: " + response.statusCode);
-  // else {
-  //
-  // }
-  var $ = cheerio.load(body);
-// console.log(body);
-  $('#yearSelector > option').each(function( index ) {
-    var year = $(this).val().trim();
-    years.push(year)
-  });
-  console.log(years);
+// function getYears() {
+//   let request = rp(url)
+//   return request
+// }
+//
+function getYears() {
+  let arg = axios.get(url)
+  return arg
+}
 
-});
-console.log(`Hi ${years}`);
+getYears().then((response) => {
+  // console.log(response);
+  module.exports = response
+})
+
+//
+// getYears().then((response) => {
+//   var $ = cheerio.load(response)
+//   $('#yearSelector > option').each(function( index ) {
+//     console.log('hits');
+//     var year = $(this).val().trim();
+//     years.push(year)
+//   })
+// })
+//
+
+
+// x = kickStarter(url)
+// console.log(x);
+//
+// getYears(url).then((respsonse) => {
+//   console.log(response);
+// })
+//
+// function kickStarter(startUrl) {
+//   // hopefullyYearsArray = getYears(startUrl)
+//   // console.log(hopefullyYearsArray);
+//   return hopefullyYearsArray
+// }
+//
+//  function newarray(array) {
+//   console.log(array);
+// }
+//
+// function getYears(url) {
+//   var options = {
+//     uri: url,
+//     transform: function (body) {
+//       return cheerio.load(body);
+//     }
+//   };
+//
+//   let request = rp(options)
+//   .then(function ($) {
+//     // Process html like you would with jQuery...
+//     $('#yearSelector > option').each(function( index ) {
+//       var year = $(this).val().trim();
+//       years.push(year)
+//     })
+//     return years
+//   })
+//   .catch(function (err) {
+//     // Crawling failed or Cheerio choked...
+//     console.log('whooops');
+//   });
+//   console.log(request);
+//   return request
+//
+// }
+//
+
+
+
+
+
+// request(url, function(error, response, body) {
+//   // if(error) {
+//   //   console.log("Error: " + error);
+//   // }
+//   // console.log("Status code: " + response.statusCode);
+//   // else {
+//   //
+//   // }
+//   var $ = cheerio.load(body);
+// // console.log(body);
+//   $('#yearSelector > option').each(function( index ) {
+//     var year = $(this).val().trim();
+//     years.push(year)
+//   });
+//   console.log(years);
+//
+// });
+// console.log(`Hi ${years}`);
+
+
+
+
 //
 // function(link, callback){
 //   request(link, function(err, im, body){
