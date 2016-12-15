@@ -1,10 +1,20 @@
 import requests
 from BeautifulSoup import BeautifulSoup
 
-url = 'http://www.pgatour.com/stats/stat.02673.html'
+url = 'http://www.pgatour.com/stats/stat.02674.html'
+urlTrimmed = url[:-5]
+print urlTrimmed
 response = requests.get(url)
 html = response.content
 soup = BeautifulSoup(html)
+
+# ------ Succesfully gets headers ------
+
+headers = []
+headerHTML = soup.find('thead')
+differentHeaders = headerHTML.findAll('th')
+for header in differentHeaders:
+    headers.append(header.text)
 
 # ------ Succesfully gets years ------
 
@@ -13,33 +23,30 @@ yearsArray = []
 for year in yearsHTML.findAll('option'):
     yearsArray.append(year.text)
 
-# ------ Succesfully gets first player over multiple years ------
+# ------ Succesfully gets all players over multiple years ------
 
-# for year in yearsArray:
-#     url = "http://www.pgatour.com/stats/stat.02673.{0}.html".format(year)
-#     response = requests.get(url)
-#     html = response.content
-#     soup = BeautifulSoup(html)
-#
-#     playerStats = soup.find('tbody')
-#     firstPlayer = playerStats.find('td', attrs={'class': 'player-name'})
-#     if firstPlayer == None:
-#         print "Player Stats not avialable this year"
-#     else:
-#         name = firstPlayer.text.replace('&nbsp;', ' ')
-#         print str(year) + ": " + name
-
-# ------ Tests getting all players over multiple years ------
-for year in yearsArray:  
-    url = "http://www.pgatour.com/stats/stat.02673.{0}.html".format(year)
-    response = requests.get(url)
+for year in yearsArray:
+    newUrl = "{0}.{1}.html".format(urlTrimmed,year)
+    response = requests.get(newUrl)
     html = response.content
     soup = BeautifulSoup(html)
 
     playerStats = soup.find('tbody')
-    firstPlayer = playerStats.find('td', attrs={'class': 'player-name'})
-    if firstPlayer == None:
-        print "Player Stats not avialable this year"
-    else:
-        name = firstPlayer.text.replace('&nbsp;', ' ')
-        print str(year) + ": " + name
+    allPlayers = playerStats.findAll('tr')
+
+    print ' '
+    print year
+    print ' '
+
+    # ------ Succesfully pulls all information and displays appropriate headers for all stats ------
+
+    for playerRow in allPlayers:
+        if playerRow == None:
+            print "Player Stats not available this year"
+        else:
+            playerStats = playerRow.findAll('td')
+            index = 0
+            print ' -- '
+            for stat in playerStats:
+                print headers[index] + ': ' + stat.text.replace('&nbsp;', ' ')
+                index = index + 1
