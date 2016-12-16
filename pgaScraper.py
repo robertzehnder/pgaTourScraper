@@ -23,14 +23,21 @@ soup = BeautifulSoup(html)
 
 # finds all stat sub categories on a stat category home page
 statDivs = soup.findAll('div', attrs={'class': 'table-content clearfix'})
+# x = statDivs.find('a')
+
+
 index = 0
 statLinks = []
+actualLinks = []
 for stat in statDivs:
-    statLinks.append(soup.findAll('li', attrs={'data-category-index': index}))
-    print statLinks[index]
-    index = index + 1
+    statLinks.append(stat.findAll('a'))
+for link in statLinks:
+    for sublink in link:
+        actualLinks.append(sublink['href'])
 
-print statLinks[0]
+print actualLinks
+
+# print statLinks
 # # ------ URL for individual stat category ------
 #
 # url = 'http://www.pgatour.com/stats/stat.02674.html'
