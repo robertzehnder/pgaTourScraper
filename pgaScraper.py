@@ -14,9 +14,26 @@ categories = [
     'http://www.pgatour.com/stats/categories.RPTS_INQ.html'
 ]
 
-# ------ Begins the process of getting all stats from sub categories ------
+categoryNames = [
+    'Off the Tee',
+    'Approach Shots',
+    'Around the Green',
+    'Scoring',
+    'Streaks',
+    'Money/Finishes',
+    'Points/Rankings'
+]
 
+# ------ Begins the process of getting all stats from sub categories ------
+categoryIndex = 0
 for category in categories:
+    print ' '
+    print '--------------------------------------------------------'
+    print categoryNames[categoryIndex]
+    print '--------------------------------------------------------'
+    print ' '
+    categoryIndex = categoryIndex + 1
+
     startUrl = '{0}'.format(category)
     response = requests.get(startUrl)
     html = response.content
