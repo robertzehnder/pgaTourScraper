@@ -4,24 +4,24 @@ from BeautifulSoup import BeautifulSoup
 # ------ Links and names of the broad stat categories ------
 
 categories = [
-    'http://www.pgatour.com/stats/categories.ROTT_INQ.html'#,
-    # 'http://www.pgatour.com/stats/categories.RAPP_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RARG_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RPUT_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RSCR_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RSTR_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RMNY_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RPTS_INQ.html'
+    'http://www.pgatour.com/stats/categories.ROTT_INQ.html',
+    'http://www.pgatour.com/stats/categories.RAPP_INQ.html',
+    'http://www.pgatour.com/stats/categories.RARG_INQ.html',
+    'http://www.pgatour.com/stats/categories.RPUT_INQ.html',
+    'http://www.pgatour.com/stats/categories.RSCR_INQ.html',
+    'http://www.pgatour.com/stats/categories.RSTR_INQ.html',
+    'http://www.pgatour.com/stats/categories.RMNY_INQ.html',
+    'http://www.pgatour.com/stats/categories.RPTS_INQ.html'
 ]
 
 categoryNames = [
-    'Off_the_Tee'#,
-    # 'Approach_Shots',
-    # 'Around_the_Green',
-    # 'Scoring',
-    # 'Streaks',
-    # 'Money-Finishes',
-    # 'Points-Rankings'
+    'Off_the_Tee',
+    'Approach_Shots',
+    'Around_the_Green',
+    'Scoring',
+    'Streaks',
+    'Money-Finishes',
+    'Points-Rankings'
 ]
 
 # ------ Begins the process of getting all stats from sub categories ------
@@ -67,7 +67,6 @@ for category in categories:
         file.write('{0}:'.format(subCategoryNames[subIndex]) + '{')
         file.write('\n')
         subIndex = subIndex + 1
-        print link
 
         # ------ URL for individual stat category ------
 
