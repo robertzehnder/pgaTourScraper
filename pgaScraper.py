@@ -28,20 +28,18 @@ categoryNames = [
 categoryIndex = 0
 for category in categories:
 
-    # file = open('{0}.txt'.format(categoryNames[categoryIndex]), 'wb')
-    # file.write('\n')
-    # file.write('{')
-    # file.write(categoryNames[categoryIndex])
-    # file.write(':')
-    # file.write('\n')
-    # categoryIndex = categoryIndex + 1
+    file = open('data.txt', 'wb')
+    file.write('\n')
+    file.write('{')
+    file.write(categoryNames[categoryIndex])
+    file.write(':')
+    file.write('\n')
+    categoryIndex = categoryIndex + 1
 
     startUrl = '{0}'.format(category)
     response = requests.get(startUrl)
     html = response.content
     soup = BeautifulSoup(html)
-
-    # print soup.prettify()
 
     # ------ Succesfully extracts all links to sub categories ------
 
@@ -54,65 +52,86 @@ for category in categories:
     for link in statLinks:
         for sublink in link:
             actualLinks.append(sublink['href'])
-            subCategoryNames.append(sublink.text)
+            subCategoryNames.append(sublink.text.replace(' ', '_'))
 
-    print subCategoryNames
-    # ------------------------------------------------------------
-    # ------ Begins to pull data from individual pages ------
-    # ------------------------------------------------------------
+    #------------------------------------------------------------
+    #------ Begins to pull data from individual pages ------
+    #------------------------------------------------------------
 
-    # for link in actualLinks:
-    #
-    #     print link
-    #
-    #     # ------ URL for individual stat category ------
-    #
-    #     url = 'http://www.pgatour.com{0}'.format(link)
-    #     urlTrimmed = url[:-5]
-    #     # file.write(urlTrimmed)
-    #     response = requests.get(url)
-    #     html = response.content
-    #     soup = BeautifulSoup(html)
-    #
-    #     # ------ Succesfully gets headers ------
-    #
-    #     headers = []
-    #     headerHTML = soup.find('thead')
-    #     differentHeaders = headerHTML.findAll('th')
-    #     for header in differentHeaders:
-    #         headers.append(header.text)
-    #
-    #     # ------ Succesfully gets years ------
-    #
-    #     yearsHTML = soup.find('select', attrs={'id': 'yearSelector'})
-    #     yearsArray = []
-    #     for year in yearsHTML.findAll('option'):
-    #         yearsArray.append(year.text)
-    #
-    #     # ------ Succesfully gets all players over multiple years ------
-    #
-    #     for year in yearsArray:
-    #         newUrl = "{0}.{1}.html".format(urlTrimmed,year)
-    #         response = requests.get(newUrl)
-    #         html = response.content
-    #         soup = BeautifulSoup(html)
-    #
-    #         playerStats = soup.find('tbody')
-    #         allPlayers = playerStats.findAll('tr')
-    #
-    #         # ------ Succesfully pulls all information and displays appropriate headers for all stats ------
-    #
-    #         for playerRow in allPlayers:
-    #             if playerRow == None:
-    #                 file.write("Player Stats not available this year")
-    #             else:
-    #                 playerStats = playerRow.findAll('td')
-    #                 index = 0
-    #                 file.write('{ \n')
-    #                 file.write('YEAR: ' + year + ',\n')
-    #                 for stat in playerStats:
-    #                     file.write(headers[index] + ': ' + stat.text.replace('&nbsp;', ' ') + ',\n')
-    #                     index = index + 1
-    #                 file.write('}, \n')
-    # file.write('}')
-    # file.close()
+    subIndex = 0
+    linkIndex = 0
+    linkLength = len(actualLinks)
+    for link in actualLinks:
+
+        file.write('{\n')
+        file.write('{0}:'.format(subCategoryNames[subIndex]) + '{')
+        file.write('\n')
+        subIndex = subIndex + 1
+        print link
+
+        # ------ URL for individual stat category ------
+
+        url = 'http://www.pgatour.com{0}'.format(link)
+        urlTrimmed = url[:-5]
+        # file.write(urlTrimmed)
+        response = requests.get(url)
+        html = response.content
+        soup = BeautifulSoup(html)
+
+        # ------ Succesfully gets headers ------
+
+        headers = []
+        headerHTML = soup.find('thead')
+        differentHeaders = headerHTML.findAll('th')
+        for header in differentHeaders:
+            headers.append(header.text.replace(' ', '_'))
+
+        # ------ Succesfully gets years ------
+
+        yearsHTML = soup.find('select', attrs={'id': 'yearSelector'})
+        yearsArray = []
+        for year in yearsHTML.findAll('option'):
+            yearsArray.append(year.text)
+
+        # ------ Succesfully gets all players over multiple years ------
+
+        for year in yearsArray:
+            newUrl = "{0}.{1}.html".format(urlTrimmed,year)
+            response = requests.get(newUrl)
+            html = response.content
+            soup = BeautifulSoup(html)
+
+            playerStats = soup.find('tbody')
+            allPlayers = playerStats.findAll('tr')
+
+            # ------ Succesfully pulls all information and displays appropriate headers for all stats ------
+            allplayersLength = len(allPlayers)
+            allPlayersIndex = 0
+            for playerRow in allPlayers:
+                if playerRow == None:
+                    file.write("Player Stats not available this year")
+                else:
+                    playerStats = playerRow.findAll('td')
+                    index = 0
+                    file.write('{ \n')
+                    file.write('YEAR: ' + year + ',\n')
+
+                    playerStatLength = len(playerStats)
+                    for stat in playerStats:
+                        if index == playerStatLength - 1:
+                            file.write(headers[index] + ': ' + stat.text.replace('&nbsp;', ' ') + '\n')
+                        else:
+                            file.write(headers[index] + ': ' + stat.text.replace('&nbsp;', ' ') + ',\n')
+                        index = index + 1
+                    if allPlayersIndex == allplayersLength - 1:
+                        file.write('} \n')
+                    else:
+                        file.write('}, \n')
+                    allPlayersIndex = allPlayersIndex + 1
+            if linkIndex == linkLength - 1:
+                file.write('} \n')
+            else:
+                file.write('}, \n')
+            linkIndex = linkIndex + 1
+    file.write('}')
+    file.close()
