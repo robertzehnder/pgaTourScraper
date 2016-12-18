@@ -1,7 +1,7 @@
 import requests
 from BeautifulSoup import BeautifulSoup
 
-# Links to the broad stat categories
+# ------ Links and names of the broad stat categories ------
 
 categories = [
     'http://www.pgatour.com/stats/categories.ROTT_INQ.html',
@@ -15,23 +15,28 @@ categories = [
 ]
 
 categoryNames = [
-    'Off the Tee',
-    'Approach Shots',
-    'Around the Green',
+    'Off_the_Tee',
+    'Approach_Shots',
+    'Around_the_Green',
     'Scoring',
     'Streaks',
-    'Money/Finishes',
-    'Points/Rankings'
+    'Money-Finishes',
+    'Points-Rankings'
 ]
 
 # ------ Begins the process of getting all stats from sub categories ------
 categoryIndex = 0
 for category in categories:
-    print ' '
+
+    file = open('{0}.txt'.format(categoryNames[categoryIndex]), 'wb')
+    file.write('\n')
+    file.write('--------------------------------------------------------')
     print '--------------------------------------------------------'
+    file.write(categoryNames[categoryIndex])
     print categoryNames[categoryIndex]
+    file.write('--------------------------------------------------------')
     print '--------------------------------------------------------'
-    print ' '
+    file.write('\n')
     categoryIndex = categoryIndex + 1
 
     startUrl = '{0}'.format(category)
@@ -56,11 +61,13 @@ for category in categories:
 
     for link in actualLinks:
 
+        print link
+
         # ------ URL for individual stat category ------
 
         url = 'http://www.pgatour.com{0}'.format(link)
         urlTrimmed = url[:-5]
-        # print urlTrimmed
+        # file.write(urlTrimmed)
         response = requests.get(url)
         html = response.content
         soup = BeautifulSoup(html)
@@ -91,19 +98,21 @@ for category in categories:
             playerStats = soup.find('tbody')
             allPlayers = playerStats.findAll('tr')
 
-            print ' '
-            print year
-            print ' '
+            file.write(' ')
+            file.write(year)
+            file.write(' ')
 
             # ------ Succesfully pulls all information and displays appropriate headers for all stats ------
 
             for playerRow in allPlayers:
                 if playerRow == None:
-                    print "Player Stats not available this year"
+                    file.write("Player Stats not available this year")
                 else:
                     playerStats = playerRow.findAll('td')
                     index = 0
-                    print ' -- '
+                    file.write(' -- ')
                     for stat in playerStats:
-                        print headers[index] + ': ' + stat.text.replace('&nbsp;', ' ')
+                        file.write(headers[index] + ': ' + stat.text.replace('&nbsp;', ' '))
                         index = index + 1
+
+    file.close()
