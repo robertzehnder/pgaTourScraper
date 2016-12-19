@@ -1,25 +1,26 @@
+import os
 import requests
 from BeautifulSoup import BeautifulSoup
 
 # ------ Links and names of the broad stat categories ------
 
 categories = [
-    'http://www.pgatour.com/stats/categories.ROTT_INQ.html',
-    'http://www.pgatour.com/stats/categories.RAPP_INQ.html',
-    'http://www.pgatour.com/stats/categories.RARG_INQ.html',
-    'http://www.pgatour.com/stats/categories.RPUT_INQ.html',
-    'http://www.pgatour.com/stats/categories.RSCR_INQ.html',
-    'http://www.pgatour.com/stats/categories.RSTR_INQ.html',
+    # 'http://www.pgatour.com/stats/categories.ROTT_INQ.html',
+    # 'http://www.pgatour.com/stats/categories.RAPP_INQ.html',
+    # 'http://www.pgatour.com/stats/categories.RARG_INQ.html',
+    # 'http://www.pgatour.com/stats/categories.RPUT_INQ.html',
+    # 'http://www.pgatour.com/stats/categories.RSCR_INQ.html',
+    # 'http://www.pgatour.com/stats/categories.RSTR_INQ.html',
     'http://www.pgatour.com/stats/categories.RMNY_INQ.html',
     'http://www.pgatour.com/stats/categories.RPTS_INQ.html'
 ]
 
 categoryNames = [
-    'Off_the_Tee',
-    'Approach_Shots',
-    'Around_the_Green',
-    'Scoring',
-    'Streaks',
+    # 'Off_the_Tee',
+    # 'Approach_Shots',
+    # 'Around_the_Green',
+    # 'Scoring',
+    # 'Streaks',
     'Money-Finishes',
     'Points-Rankings'
 ]
@@ -28,13 +29,13 @@ categoryNames = [
 categoryIndex = 0
 for category in categories:
 
-    file = open('data.txt', 'wb')
-    file.write('\n')
-    file.write('{')
-    file.write(categoryNames[categoryIndex])
-    file.write(':')
-    file.write('\n')
-    categoryIndex = categoryIndex + 1
+    # file = open('data/data.json', 'wb')
+    # file.write('\n')
+    # file.write('{')
+    # file.write(categoryNames[categoryIndex])
+    # file.write(':')
+    # file.write('\n')
+    # categoryIndex = categoryIndex + 1
 
     startUrl = '{0}'.format(category)
     response = requests.get(startUrl)
@@ -62,10 +63,11 @@ for category in categories:
     linkIndex = 0
     linkLength = len(actualLinks)
     for link in actualLinks:
+        file = open('data/{0}/{1}.json'.format(categoryNames[categoryIndex],subCategoryNames[subIndex]), 'wb')
+        # file.write('{\n')
+        # file.write('{0}:'.format(subCategoryNames[subIndex]) + '{')
+        # file.write('\n')
 
-        file.write('{\n')
-        file.write('{0}:'.format(subCategoryNames[subIndex]) + '{')
-        file.write('\n')
         subIndex = subIndex + 1
 
         # ------ URL for individual stat category ------
@@ -104,7 +106,7 @@ for category in categories:
             allPlayers = playerStats.findAll('tr')
 
             # ------ Succesfully pulls all information and displays appropriate headers for all stats ------
-            
+
             allplayersLength = len(allPlayers)
             allPlayersIndex = 0
             for playerRow in allPlayers:
@@ -113,25 +115,42 @@ for category in categories:
                 else:
                     playerStats = playerRow.findAll('td')
                     index = 0
-                    file.write('{ \n')
-                    file.write('YEAR: ' + year + ',\n')
+                    file.write('{' + '"' + 'index' + '"' + ':{' + '"' + '_id' + '"' + ':"' + "{0}".format(allPlayersIndex+1) + '"}}\n')
+                    # file.write('{ \n')
+
+                # 120-133
+                    file.write('{"YEAR": ' + year + ',')
 
                     playerStatLength = len(playerStats)
                     for stat in playerStats:
+                        # print stat
+                        printedstat = stat.text
+                        printedstat = printedstat.replace('&nbsp;', ' ')
+                        printedstat = printedstat.replace(',','')
+                        printedstat = printedstat.replace('$','')
+                        try:
+                            int(printedstat)
+                            float(printedstat)
+                        except Exception as e:
+                            printedstat = '"' + printedstat + '"'
+                        # print printedstat
+
                         if index == playerStatLength - 1:
-                            file.write(headers[index] + ': ' + stat.text.replace('&nbsp;', ' ') + '\n')
+                            file.write('"{0}"'.format(headers[index]) + ': ' + printedstat)
                         else:
-                            file.write(headers[index] + ': ' + stat.text.replace('&nbsp;', ' ') + ',\n')
+                            file.write('"{0}"'.format(headers[index]) + ': ' + printedstat + ',')
                         index = index + 1
-                    if allPlayersIndex == allplayersLength - 1:
-                        file.write('} \n')
-                    else:
-                        file.write('}, \n')
+                    # if allPlayersIndex == allplayersLength - 1:
+                    file.write('} \n')
+                    # else:
+                        # file.write('}, \n')
                     allPlayersIndex = allPlayersIndex + 1
-            if linkIndex == linkLength - 1:
-                file.write('} \n')
-            else:
-                file.write('}, \n')
-            linkIndex = linkIndex + 1
-    file.write('}')
+            # if linkIndex == linkLength - 1:
+            #     file.write('} \n')
+            # else:
+            #     file.write('}, \n')
+            # linkIndex = linkIndex + 1
+            # file.write('}')
     file.close()
+    os.system("curl -XPOST 'localhost:9200/data/Off_the_Tee/_bulk?pretty' --data-binary @Ball_Speed.json")
+    categoryIndex = categoryIndex + 1
