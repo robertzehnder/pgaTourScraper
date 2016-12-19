@@ -104,6 +104,7 @@ for category in categories:
             allPlayers = playerStats.findAll('tr')
 
             # ------ Succesfully pulls all information and displays appropriate headers for all stats ------
+            
             allplayersLength = len(allPlayers)
             allPlayersIndex = 0
             for playerRow in allPlayers:

@@ -1,0 +1,50 @@
+body {
+  width: 600px;
+}
+
+header {
+  margin: 10px 0px 20px 0px;
+  color: white;
+  background-color: #383838;
+  padding: 5px 0px 5px 10px;
+  width: 100%;
+  border: 1px solid black;
+}
+
+nav {
+  display: inline;
+}
+
+li {
+  display: inline;
+  margin-right: 10px;
+}
+
+#title {
+  font-size: 24px;
+  margin-right: 20px;
+}
+
+.urlSelect {
+  margin-bottom: 10px;
+}
+
+.preview {
+  background-color: #D0D0D0;
+  width: 100%;
+  padding: 10px 5px 10px 5px;
+  margin-top: 20px;
+  border: 1px solid black;
+}
+
+.dataSampleBody {
+  margin-left: 90px;
+}
+
+.sampleDataSubTitle {
+  margin-left: 60px;
+}
+
+.sampledataTitle {
+  margin-left: 30px;
+}

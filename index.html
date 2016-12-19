@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="style.css">
+  <title>PGA Tour API</title>
+</head>
+<body>
+  <header>
+    <span id="title"><b>PGA Tour API</b></span>
+    <nav>
+      <li>API</li>
+      <li>About</li>
+      <li>Analytics</li>
+    </nav>
+  </header>
+  <main>
+    <div class="urlSelect">
+      <select class="mainCategory" name="Hello">
+        <option value="">Choose Category</option>
+        <option value="">All</option>
+        <option value="">Off the Tee</option>
+      </select>
+      <select class="subCategory" name="">
+        <option value="">Choose Sub Category</option>
+        <option value="">All</option>
+        <option value="">Driving Distance</option>
+      </select>
+      <button type="button" name="button">Preview JSON Results</button>
+    </div>
+
+    <div class="previewLink preview"><span>www.robztourapi.com/api/off_the_tee/drives_over_320_yards</span></div>
+
+    <div class="sampleData preview">
+      <p>
+      {
+        <div class="sampledataTitle">
+          Off_the_Tee: {</br>
+        </div>
+          <div class="sampleDataSubTitle">
+            SG:_Tee-to-Green:{</br>
+              {</br>
+          </div>
+            <div class="dataSampleBody">
+            YEAR: 2017,</br>
+            RANK_THIS_WEEK: 1,</br>
+            RANK_LAST_WEEK: 1,</br>
+            PLAYER_NAME: Kevin Chappell,</br>
+            ROUNDS: 10,</br>
+            AVERAGE: 4.091,</br>
+            SG:OTT: 1.203,</br>
+            SG:APR: 1.888,</br>
+            SG:ARG: 1.000,</br>
+            MEASURED_ROUNDS: 1</br>
+          </div>
+          <div class="sampleDataSubTitle">
+            },</br>
+            .</br>
+            .</br>
+            .</br>
+          </div>
+    </p>
+
+    </div>
+  </main>
+</body>
+</html>
