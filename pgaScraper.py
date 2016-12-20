@@ -123,23 +123,34 @@ for category in categories:
 
                     playerStatLength = len(playerStats)
                     for stat in playerStats:
-                        # print stat
+
+                        # This looks like a job for RegEx, but don't know it well enough yet...
                         printedstat = stat.text
                         printedstat = printedstat.replace('&nbsp;', ' ')
                         printedstat = printedstat.replace(',','')
                         printedstat = printedstat.replace('$','')
+
+                        if headers[index][:4] == 'RANK':
+                            if printedstat[:1] == 'T':
+                                printedstat = printedstat[1:]
+
+                        if printedstat == '':
+                            printedstat = '0'
+
                         try:
                             int(printedstat)
                             float(printedstat)
                         except Exception as e:
                             printedstat = '"' + printedstat + '"'
-                        # print printedstat
 
                         if index == playerStatLength - 1:
                             file.write('"{0}"'.format(headers[index]) + ': ' + printedstat)
                         else:
                             file.write('"{0}"'.format(headers[index]) + ': ' + printedstat + ',')
                         index = index + 1
+
+
+
                     # if allPlayersIndex == allplayersLength - 1:
                     file.write('} \n')
                     # else:
@@ -152,5 +163,5 @@ for category in categories:
             # linkIndex = linkIndex + 1
             # file.write('}')
     file.close()
-    os.system("curl -XPOST 'localhost:9200/data/Off_the_Tee/_bulk?pretty' --data-binary @Ball_Speed.json")
+    os.system("curl -XPOST 'localhost:9200/data/{0}/_bulk?pretty' --data-binary @{1}.json".format(categoryNames[categoryIndex],subCategoryNames[subIndex]))
     categoryIndex = categoryIndex + 1

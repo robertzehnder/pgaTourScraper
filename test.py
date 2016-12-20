@@ -13,7 +13,7 @@ except Exception as e:
 
 print type(num)
 # import os
-# os.system("curl -XPOST 'localhost:9200/data/Off_the_Tee/_bulk?pretty' --data-binary @Ball_Speed.json")
+# os.system("curl -XPOST 'localhost:9200/data/Off_the_Tee/_bulk?pretty' --data-binary @Official_Money.json")
 #                     playerStatLength = len(playerStats)
 #                     for stat in playerStats:
 #                         print stat
