@@ -16,13 +16,13 @@ categories = [
 ]
 
 categoryNames = [
-    # 'Off_the_Tee',
-    # 'Approach_Shots',
-    # 'Around_the_Green',
-    # 'Scoring',
-    # 'Streaks',
-    'Money-Finishes',
-    'Points-Rankings'
+    # 'off_the_tee',
+    # 'approach_shots',
+    # 'around_the_green',
+    # 'scoring',
+    # 'streaks',
+    'money-finishes',
+    'points-rankings'
 ]
 
 # ------ Begins the process of getting all stats from sub categories ------
@@ -63,12 +63,12 @@ for category in categories:
     linkIndex = 0
     linkLength = len(actualLinks)
     for link in actualLinks:
-        file = open('data/{0}/{1}.json'.format(categoryNames[categoryIndex],subCategoryNames[subIndex]), 'wb')
+        file = open('data/{0}/{1}.json'.format(categoryNames[categoryIndex].lower(),subCategoryNames[subIndex].lower()), 'wb')
         # file.write('{\n')
         # file.write('{0}:'.format(subCategoryNames[subIndex]) + '{')
         # file.write('\n')
 
-        subIndex = subIndex + 1
+
 
         # ------ URL for individual stat category ------
 
@@ -95,7 +95,7 @@ for category in categories:
             yearsArray.append(year.text)
 
         # ------ Succesfully gets all players over multiple years ------
-
+        esIndexCounter = 0
         for year in yearsArray:
             newUrl = "{0}.{1}.html".format(urlTrimmed,year)
             response = requests.get(newUrl)
@@ -104,7 +104,6 @@ for category in categories:
 
             playerStats = soup.find('tbody')
             allPlayers = playerStats.findAll('tr')
-
             # ------ Succesfully pulls all information and displays appropriate headers for all stats ------
 
             allplayersLength = len(allPlayers)
@@ -115,9 +114,16 @@ for category in categories:
                 else:
                     playerStats = playerRow.findAll('td')
                     index = 0
-                    file.write('{' + '"' + 'index' + '"' + ':{' + '"' + '_id' + '"' + ':"' + "{0}".format(allPlayersIndex+1) + '"}}\n')
-                    # file.write('{ \n')
 
+                    # {"index":{"_index":"shakespeare","_type":"act","_id":0}}
+
+                    file.write('{' + '"' + 'index' + '"' + ':{' + '"' + '_index' + '"' + ':' + '"' + categoryNames[categoryIndex].lower() + '",' + '"' + '_type' + '"' + ':' + '"' + subCategoryNames[subIndex].lower() + '",' + '"' + '_id' + '"' + ':' + "{0}".format(esIndexCounter) + '}}\n')
+                    # print categoryNames[categoryIndex].lower()
+                    # print subCategoryNames[subIndex].lower()
+                    # print "{0}".format(esIndexCounter)
+
+                    # file.write('{ \n')
+                    esIndexCounter = esIndexCounter + 1
                 # 120-133
                     file.write('{"YEAR": ' + year + ',')
 
@@ -136,17 +142,21 @@ for category in categories:
 
                         if printedstat == '':
                             printedstat = '0'
+                            printedstat = int(printedstat)
 
                         try:
-                            int(printedstat)
-                            float(printedstat)
+                            if float(printedstat):
+                                printedstat = float(printedstat)
+                            if int(printedstat):
+                                printedstat = int(printedstat)
                         except Exception as e:
-                            printedstat = '"' + printedstat + '"'
+                            printedstat = '"' + str(printedstat) + '"'
 
+                        print '{0}: {1}'.format(headers[index],type(printedstat))
                         if index == playerStatLength - 1:
-                            file.write('"{0}"'.format(headers[index]) + ': ' + printedstat)
+                            file.write('"{0}"'.format(headers[index]) + ': {0}'.format(printedstat))
                         else:
-                            file.write('"{0}"'.format(headers[index]) + ': ' + printedstat + ',')
+                            file.write('"{0}"'.format(headers[index]) + ': {0}'.format(printedstat) + ',')
                         index = index + 1
 
 
@@ -162,6 +172,7 @@ for category in categories:
             #     file.write('}, \n')
             # linkIndex = linkIndex + 1
             # file.write('}')
+        subIndex = subIndex + 1
     file.close()
     os.system("curl -XPOST 'localhost:9200/data/{0}/_bulk?pretty' --data-binary @{1}.json".format(categoryNames[categoryIndex],subCategoryNames[subIndex]))
     categoryIndex = categoryIndex + 1

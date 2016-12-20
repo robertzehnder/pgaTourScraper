@@ -68,3 +68,6 @@
 [2016-12-19T10:52:41,294][WARN ][o.e.d.i.m.StringFieldMapper$TypeParser] The [string] field is deprecated, please use [text] or [keyword] instead on [searchSourceJSON]
 [2016-12-19T10:52:41,557][WARN ][o.e.d.i.q.QueryParseContext] query malformed, empty clause found at [1:143]
 [2016-12-19T14:09:15,371][WARN ][o.e.d.s.g.GroovyScriptEngineService] [groovy] scripts are deprecated, use [painless] scripts instead
+[2016-12-20T08:29:31,240][WARN ][o.e.d.s.g.GroovyScriptEngineService] [groovy] scripts are deprecated, use [painless] scripts instead
+[2016-12-20T10:56:19,296][WARN ][o.e.d.i.m.StringFieldMapper$TypeParser] The [string] field is deprecated, please use [text] or [keyword] instead on [PLAYER_NAME]
+[2016-12-20T11:05:53,453][WARN ][o.e.d.i.m.TypeParsers    ] Expected a boolean for property [index] but got [not_analyzed]
