@@ -87,6 +87,8 @@ for category in categories:
         for header in differentHeaders:
             headers.append(header.text.replace(' ', '_'))
 
+        headerLength = len(headers)
+
         # ------ Succesfully gets years ------
 
         yearsHTML = soup.find('select', attrs={'id': 'yearSelector'})
@@ -159,7 +161,10 @@ for category in categories:
                             file.write('"{0}"'.format(headers[index]) + ': {0}'.format(printedstat) + ',')
                         index = index + 1
 
+                        # Put everything in here for adding the command
+                        "YEAR" : { "type" : "integer" },"RANK_THIS_WEEK" : { "type" : "integer" },"RANK_LAST_WEEK" : { "type" : "integer" },"PLAYER_NAME" : {"type": "text", "fielddata": true, "index" : "not_analyzed" },"EVENTS" : { "type" : "integer" },"MONEY" : { "type" : "integer" },"YTD_VICTORIES" : { "type" : "integer" }
 
+                        curl -XPUT "http://localhost:9200/{0}" -d'{"mappings" : {"_default_" : {"properties" : {1}}}}'.format(subCategoryNames[subIndex].lower(),schemaFormat)
 
                     # if allPlayersIndex == allplayersLength - 1:
                     file.write('} \n')
@@ -174,5 +179,5 @@ for category in categories:
             # file.write('}')
         subIndex = subIndex + 1
     file.close()
-    os.system("curl -XPOST 'localhost:9200/data/{0}/_bulk?pretty' --data-binary @{1}.json".format(categoryNames[categoryIndex],subCategoryNames[subIndex]))
+    # os.system("curl -XPOST 'localhost:9200/data/{0}/_bulk?pretty' --data-binary @{1}.json".format(categoryNames[categoryIndex],subCategoryNames[subIndex]))
     categoryIndex = categoryIndex + 1
