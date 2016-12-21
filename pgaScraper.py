@@ -63,7 +63,7 @@ for category in categories:
     linkIndex = 0
     linkLength = len(actualLinks)
     for link in actualLinks:
-        file = open('data/{0}/{1}.json'.format(categoryNames[categoryIndex].lower(),subCategoryNames[subIndex].lower()), 'wb')
+        file = open('{0}.json'.format(subCategoryNames[subIndex].lower()), 'wb') #categoryNames[categoryIndex].lower(),
         # file.write('{\n')
         # file.write('{0}:'.format(subCategoryNames[subIndex]) + '{')
         # file.write('\n')
@@ -106,6 +106,7 @@ for category in categories:
 
             playerStats = soup.find('tbody')
             allPlayers = playerStats.findAll('tr')
+
             # ------ Succesfully pulls all information and displays appropriate headers for all stats ------
 
             allplayersLength = len(allPlayers)
@@ -117,35 +118,53 @@ for category in categories:
                     playerStats = playerRow.findAll('td')
                     index = 0
 
-                    # {"index":{"_index":"shakespeare","_type":"act","_id":0}}
-
                     file.write('{' + '"' + 'index' + '"' + ':{' + '"' + '_index' + '"' + ':' + '"' + categoryNames[categoryIndex].lower() + '",' + '"' + '_type' + '"' + ':' + '"' + subCategoryNames[subIndex].lower() + '",' + '"' + '_id' + '"' + ':' + "{0}".format(esIndexCounter) + '}}\n')
-                    # print categoryNames[categoryIndex].lower()
-                    # print subCategoryNames[subIndex].lower()
-                    # print "{0}".format(esIndexCounter)
 
-                    # file.write('{ \n')
-                    esIndexCounter = esIndexCounter + 1
-                # 120-133
+
+
                     file.write('{"YEAR": ' + year + ',')
 
+                # ------ Prints out all stats for a player for a given year ------
+
                     playerStatLength = len(playerStats)
+                    potato = 0
+                    stringToBuild = ''
+                    dataType = ''
+
                     for stat in playerStats:
 
-                        # This looks like a job for RegEx, but don't know it well enough yet...
+                    # ------ Error Handling Section to create desirable data format for JSON file ------
+
+                        # This looks like a job for RegEx, but don't know it well enough yet...Replace bad characters
                         printedstat = stat.text
                         printedstat = printedstat.replace('&nbsp;', ' ')
                         printedstat = printedstat.replace(',','')
                         printedstat = printedstat.replace('$','')
 
-                        if headers[index][:4] == 'RANK':
-                            if printedstat[:1] == 'T':
-                                printedstat = printedstat[1:]
+                        # Check to see if header is longer than 4, so no OB error. Then see if rank, then see if there's a T for tie and correct it to make it an integer
 
+
+                        try:
+                            if len(headers[index]) >= 4:
+                                if headers[index][:4] == 'RANK':
+                                    if printedstat[:1] == 'T':
+                                        printedstat = printedstat[1:]
+                        except Exception as e:
+                            break
+
+                        print 'Category: {0}'.format(subCategoryNames[subIndex].lower())
+                        print 'this is the index: {0}'.format(index)
+                        print 'This is the category being printed {0}'.format(headers[index])
+                        print 'year: {0}'.format(year)
+                        print 'Index to trigger string builder {0}'.format(allPlayersIndex)
+
+
+                        # If it's blank, make it a zero
                         if printedstat == '':
                             printedstat = '0'
                             printedstat = int(printedstat)
 
+                        # Format all data into int, float, or string, so that it can comply with JSON format and be easy to manipulate for schema template creation
                         try:
                             if float(printedstat):
                                 printedstat = float(printedstat)
@@ -154,29 +173,53 @@ for category in categories:
                         except Exception as e:
                             printedstat = '"' + str(printedstat) + '"'
 
-                        print '{0}: {1}'.format(headers[index],type(printedstat))
+                        # print '{0}: {1}'.format(headers[index],type(printedstat))
                         if index == playerStatLength - 1:
                             file.write('"{0}"'.format(headers[index]) + ': {0}'.format(printedstat))
                         else:
                             file.write('"{0}"'.format(headers[index]) + ': {0}'.format(printedstat) + ',')
+
+
+
+                        if esIndexCounter == 0:
+                            if potato == 0:
+                                stringToBuild+=str('"' + 'YEAR' + '" : {"type' + '" : "' + 'integer' + '"},')
+                                potato = potato + 1
+                            if type(printedstat) is int:
+                                dataType = 'integer'
+                            elif type(printedstat) is float:
+                                dataType = 'float'
+                            else:
+                                dataType = 'text'
+                                # print headers
+                            if dataType == 'text':
+                                if index == headerLength - 1:
+                                    stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" , "fielddata": true, "index" : "not_analyzed"}')
+                                else:
+                                    stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" , "fielddata": true, "index" : "not_analyzed"},')
+
+                            if index == headerLength - 1:
+                                stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" }')
+                            else:
+                                stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" },')
+
                         index = index + 1
-
-                        # Put everything in here for adding the command
-                        "YEAR" : { "type" : "integer" },"RANK_THIS_WEEK" : { "type" : "integer" },"RANK_LAST_WEEK" : { "type" : "integer" },"PLAYER_NAME" : {"type": "text", "fielddata": true, "index" : "not_analyzed" },"EVENTS" : { "type" : "integer" },"MONEY" : { "type" : "integer" },"YTD_VICTORIES" : { "type" : "integer" }
-
-                        curl -XPUT "http://localhost:9200/{0}" -d'{"mappings" : {"_default_" : {"properties" : {1}}}}'.format(subCategoryNames[subIndex].lower(),schemaFormat)
-
-                    # if allPlayersIndex == allplayersLength - 1:
                     file.write('} \n')
-                    # else:
-                        # file.write('}, \n')
+                    print ' '
+                    print stringToBuild
+                    print ' '
+
                     allPlayersIndex = allPlayersIndex + 1
+                    esIndexCounter = esIndexCounter + 1 # Counter for Elasticsearch index template. Increments for indicies
             # if linkIndex == linkLength - 1:
             #     file.write('} \n')
             # else:
             #     file.write('}, \n')
             # linkIndex = linkIndex + 1
             # file.write('}')
+        # commandString = 'curl -XPUT ' + '"' + "http://localhost:9200/{0}".format(subCategoryNames[subIndex].lower()) + '"' + " -d' " + '{' + '"' + 'mappings' + '"' + ' : {' + '"' + '_default_' + '" : {' + '"' + 'properties' + '"'
+        # commandString += str(": {" + stringToBuild + " }}}}'")
+        # print commandString
         subIndex = subIndex + 1
     file.close()
     # os.system("curl -XPOST 'localhost:9200/data/{0}/_bulk?pretty' --data-binary @{1}.json".format(categoryNames[categoryIndex],subCategoryNames[subIndex]))
