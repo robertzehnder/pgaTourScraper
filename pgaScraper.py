@@ -63,6 +63,7 @@ for category in categories:
     linkIndex = 0
     linkLength = len(actualLinks)
     for link in actualLinks:
+        stringToBuild = ''
         file = open('{0}.json'.format(subCategoryNames[subIndex].lower()), 'wb') #categoryNames[categoryIndex].lower(),
         # file.write('{\n')
         # file.write('{0}:'.format(subCategoryNames[subIndex]) + '{')
@@ -118,7 +119,7 @@ for category in categories:
                     playerStats = playerRow.findAll('td')
                     index = 0
 
-                    file.write('{' + '"' + 'index' + '"' + ':{' + '"' + '_index' + '"' + ':' + '"' + categoryNames[categoryIndex].lower() + '",' + '"' + '_type' + '"' + ':' + '"' + subCategoryNames[subIndex].lower() + '",' + '"' + '_id' + '"' + ':' + "{0}".format(esIndexCounter) + '}}\n')
+                    file.write('{' + '"' + 'index' + '"' + ':{' + '"' + '_index' + '"' + ':' + '"' + subCategoryNames[subIndex].lower() + '",' + '"' + '_type' + '"' + ':' + '"' + 'stats' + '",' + '"' + '_id' + '"' + ':' + "{0}".format(esIndexCounter) + '}}\n')
 
 
 
@@ -128,7 +129,6 @@ for category in categories:
 
                     playerStatLength = len(playerStats)
                     potato = 0
-                    stringToBuild = ''
                     dataType = ''
 
                     for stat in playerStats:
@@ -152,11 +152,11 @@ for category in categories:
                         except Exception as e:
                             break
 
-                        print 'Category: {0}'.format(subCategoryNames[subIndex].lower())
-                        print 'this is the index: {0}'.format(index)
-                        print 'This is the category being printed {0}'.format(headers[index])
-                        print 'year: {0}'.format(year)
-                        print 'Index to trigger string builder {0}'.format(allPlayersIndex)
+                        # print 'Category: {0}'.format(subCategoryNames[subIndex].lower())
+                        # print 'this is the index: {0}'.format(index)
+                        # print 'This is the category being printed {0}'.format(headers[index])
+                        # print 'year: {0}'.format(year)
+                        # print 'Index to trigger string builder {0}'.format(allPlayersIndex)
 
 
                         # If it's blank, make it a zero
@@ -197,17 +197,17 @@ for category in categories:
                                     stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" , "fielddata": true, "index" : "not_analyzed"}')
                                 else:
                                     stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" , "fielddata": true, "index" : "not_analyzed"},')
-
-                            if index == headerLength - 1:
-                                stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" }')
                             else:
-                                stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" },')
+                                if index == headerLength - 1:
+                                    stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" }')
+                                else:
+                                    stringToBuild+=str('"' + headers[index] + '" : {"type' + '" : "' + dataType + '" },')
 
                         index = index + 1
                     file.write('} \n')
-                    print ' '
-                    print stringToBuild
-                    print ' '
+                    # print ' '
+                    # print stringToBuild
+                    # print ' '
 
                     allPlayersIndex = allPlayersIndex + 1
                     esIndexCounter = esIndexCounter + 1 # Counter for Elasticsearch index template. Increments for indicies
@@ -217,10 +217,12 @@ for category in categories:
             #     file.write('}, \n')
             # linkIndex = linkIndex + 1
             # file.write('}')
-        # commandString = 'curl -XPUT ' + '"' + "http://localhost:9200/{0}".format(subCategoryNames[subIndex].lower()) + '"' + " -d' " + '{' + '"' + 'mappings' + '"' + ' : {' + '"' + '_default_' + '" : {' + '"' + 'properties' + '"'
-        # commandString += str(": {" + stringToBuild + " }}}}'")
-        # print commandString
+        commandString = 'curl -XPUT ' + '"' + "http://localhost:9200/{0}".format(subCategoryNames[subIndex].lower()) + '"' + " -d' " + '{' + '"' + 'mappings' + '"' + ' : {' + '"' + '_default_' + '" : {' + '"' + 'properties' + '"'
+
+        commandString += str(": {" + stringToBuild + " }}}}'")
+        print commandString
+        os.system(commandString)
+        os.system("curl -XPOST 'localhost:9200/{0}/stats/_bulk?pretty' --data-binary @{0}.json".format(subCategoryNames[subIndex]))
         subIndex = subIndex + 1
     file.close()
-    # os.system("curl -XPOST 'localhost:9200/data/{0}/_bulk?pretty' --data-binary @{1}.json".format(categoryNames[categoryIndex],subCategoryNames[subIndex]))
     categoryIndex = categoryIndex + 1

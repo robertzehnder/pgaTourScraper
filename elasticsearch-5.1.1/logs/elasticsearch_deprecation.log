@@ -71,3 +71,9 @@
 [2016-12-20T08:29:31,240][WARN ][o.e.d.s.g.GroovyScriptEngineService] [groovy] scripts are deprecated, use [painless] scripts instead
 [2016-12-20T10:56:19,296][WARN ][o.e.d.i.m.StringFieldMapper$TypeParser] The [string] field is deprecated, please use [text] or [keyword] instead on [PLAYER_NAME]
 [2016-12-20T11:05:53,453][WARN ][o.e.d.i.m.TypeParsers    ] Expected a boolean for property [index] but got [not_analyzed]
+[2016-12-21T10:56:52,165][WARN ][o.e.d.i.m.TypeParsers    ] Expected a boolean for property [index] but got [not_analyzed]
+[2016-12-21T10:57:53,888][WARN ][o.e.d.i.m.TypeParsers    ] Expected a boolean for property [index] but got [not_analyzed]
+[2016-12-21T10:58:22,457][WARN ][o.e.d.i.m.TypeParsers    ] Expected a boolean for property [index] but got [not_analyzed]
+[2016-12-21T10:58:42,884][WARN ][o.e.d.i.m.TypeParsers    ] Expected a boolean for property [index] but got [not_analyzed]
+[2016-12-21T10:58:53,677][WARN ][o.e.d.i.m.TypeParsers    ] Expected a boolean for property [index] but got [not_analyzed]
+[2016-12-21T10:59:25,873][WARN ][o.e.d.i.m.TypeParsers    ] Expected a boolean for property [index] but got [not_analyzed]
