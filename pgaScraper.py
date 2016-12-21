@@ -5,37 +5,19 @@ from BeautifulSoup import BeautifulSoup
 # ------ Links and names of the broad stat categories ------
 
 categories = [
-    # 'http://www.pgatour.com/stats/categories.ROTT_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RAPP_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RARG_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RPUT_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RSCR_INQ.html',
-    # 'http://www.pgatour.com/stats/categories.RSTR_INQ.html',
+    'http://www.pgatour.com/stats/categories.ROTT_INQ.html',
+    'http://www.pgatour.com/stats/categories.RAPP_INQ.html',
+    'http://www.pgatour.com/stats/categories.RARG_INQ.html',
+    'http://www.pgatour.com/stats/categories.RPUT_INQ.html',
+    'http://www.pgatour.com/stats/categories.RSCR_INQ.html',
+    'http://www.pgatour.com/stats/categories.RSTR_INQ.html',
     'http://www.pgatour.com/stats/categories.RMNY_INQ.html',
     'http://www.pgatour.com/stats/categories.RPTS_INQ.html'
-]
-
-categoryNames = [
-    # 'off_the_tee',
-    # 'approach_shots',
-    # 'around_the_green',
-    # 'scoring',
-    # 'streaks',
-    'money-finishes',
-    'points-rankings'
 ]
 
 # ------ Begins the process of getting all stats from sub categories ------
 categoryIndex = 0
 for category in categories:
-
-    # file = open('data/data.json', 'wb')
-    # file.write('\n')
-    # file.write('{')
-    # file.write(categoryNames[categoryIndex])
-    # file.write(':')
-    # file.write('\n')
-    # categoryIndex = categoryIndex + 1
 
     startUrl = '{0}'.format(category)
     response = requests.get(startUrl)
@@ -143,7 +125,6 @@ for category in categories:
 
                         # Check to see if header is longer than 4, so no OB error. Then see if rank, then see if there's a T for tie and correct it to make it an integer
 
-
                         try:
                             if len(headers[index]) >= 4:
                                 if headers[index][:4] == 'RANK':
@@ -151,13 +132,6 @@ for category in categories:
                                         printedstat = printedstat[1:]
                         except Exception as e:
                             break
-
-                        # print 'Category: {0}'.format(subCategoryNames[subIndex].lower())
-                        # print 'this is the index: {0}'.format(index)
-                        # print 'This is the category being printed {0}'.format(headers[index])
-                        # print 'year: {0}'.format(year)
-                        # print 'Index to trigger string builder {0}'.format(allPlayersIndex)
-
 
                         # If it's blank, make it a zero
                         if printedstat == '':
@@ -205,18 +179,10 @@ for category in categories:
 
                         index = index + 1
                     file.write('} \n')
-                    # print ' '
-                    # print stringToBuild
-                    # print ' '
 
                     allPlayersIndex = allPlayersIndex + 1
                     esIndexCounter = esIndexCounter + 1 # Counter for Elasticsearch index template. Increments for indicies
-            # if linkIndex == linkLength - 1:
-            #     file.write('} \n')
-            # else:
-            #     file.write('}, \n')
-            # linkIndex = linkIndex + 1
-            # file.write('}')
+
         commandString = 'curl -XPUT ' + '"' + "http://localhost:9200/{0}".format(subCategoryNames[subIndex].lower()) + '"' + " -d' " + '{' + '"' + 'mappings' + '"' + ' : {' + '"' + '_default_' + '" : {' + '"' + 'properties' + '"'
 
         commandString += str(": {" + stringToBuild + " }}}}'")
