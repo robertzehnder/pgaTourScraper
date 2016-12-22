@@ -4,17 +4,15 @@ var client = elasticsearch.Client({
 })
 
 client.search({
-  index: 'books',
-  type: 'book',
+  index: 'official_money',
+  type: 'stats',
   body: {
     query: {
-      multi_match: {
-        query: 'express js',
-        fields: ['title', 'description']
+      match_all: {}
       }
     }
-  }
 }).then(function (response) {
+  console.log(response);
   var hits = response.hits.hits
 }, function (error) {
   console.trace(error.message)
