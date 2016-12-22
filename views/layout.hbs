@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+  </head>
+  <body>
+    <nav>
+      <li><a href="http://localhost:4000/analytics">Analytics</a></li>
+      <li><a href="http://localhost:4000/about">About</a></li>
+    </nav>
+   {{{body}}}
+  </body>
+  <style media="screen">
+  body {
+    width: 600px;
+  }
+
+  header {
+    margin: 10px 0px 20px 0px;
+    color: white;
+    background-color: #383838;
+    padding: 5px 0px 5px 10px;
+    width: 100%;
+    border: 1px solid black;
+  }
+
+  nav {
+    display: inline;
+  }
+
+  li {
+    display: inline;
+    margin-right: 10px;
+  }
+
+  #title {
+    font-size: 24px;
+    margin-right: 20px;
+  }
+
+  .urlSelect {
+    margin-bottom: 10px;
+  }
+
+  .preview {
+    background-color: #D0D0D0;
+    width: 100%;
+    padding: 10px 5px 10px 5px;
+    margin-top: 20px;
+    border: 1px solid black;
+  }
+
+  .dataSampleBody {
+    margin-left: 90px;
+  }
+
+  .sampleDataSubTitle {
+    margin-left: 60px;
+  }
+
+  .sampledataTitle {
+    margin-left: 30px;
+  }
+
+  a {
+    text-decoration: none;
+    color: white;
+  }
+  a:hover {
+    color: yellow;
+  }
+
+  body {
+    margin: 0 auto;
+    width: 80%;
+    padding: 10px 30px 10px 30px;
+    border: 1px black solid;
+    background-color: white;
+  }
+
+  html {
+    background-image: url(https://subtlepatterns.com/patterns/stardust.png);
+    background-size: cover;
+  }
+  .holder {
+    width: 100%
+  }
+  </style>
+  <script type="text/javascript">
+  $( document ).ready(function() {
+    $('.mainCategory').change(() => {
+      selectedValue = $('.mainCategory').val()
+      $('.previewLink').text(`www.robztourapi.com/api/${selectedValue}`)
+      $('.previewButton').attr('href',`http://localhost:4000/${selectedValue}`)
+    })
+    $('.previewButton').click(() => {
+      window.location = $('.previewButton').attr('href')
+    })
+  });
+  </script>
+</html>

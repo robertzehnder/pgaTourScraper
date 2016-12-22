@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <title>PGA Tour API</title>
+</head>
+<body>
+
+  <header>
+    <span id="title"><b>PGA Tour API</b></span>
+
+  </header>
+  <main>
+    <div class="urlSelect">
+      <select class="mainCategory" name="Hello">
+        <option value="">Choose Category</option>
+        <option value="official_money">Offical Money List</option>
+        <option value="longest_drives">Longest Drives</option>
+        <option value="sg:_tee-to-green">Strokes Gained Tee to Green</option>
+      </select>
+      <button type="button" href='#' class="previewButton" name="button">Preview JSON Results</button>
+    </div>
+
+    <div class="previewLink preview"><span>www.robztourapi.com/api/example</span></div>
+
+    <div class="sampleData preview">
+      <h2>JSON Preview</h2>
+      <p>
+      {
+        <div class="sampledataTitle">
+          {</br>
+            "_index": "official_money",</br>
+            "_type": "stats",</br>
+            "_id": "0",</br>
+            "_score": 1,</br>
+            "_source": {</br>
+        </div>
+          <div class="sampleDataSubTitle">
+          </div>
+            <div class="dataSampleBody">
+              "_index": "official_money",</br>
+              "_type": "stats",</br>
+              "_id": "0",</br>
+              "_score": 1,</br>
+              "_source": {</br>
+              "YEAR": 2017,</br>
+              "RANK_THIS_WEEK": 1,</br>
+              "RANK_LAST_WEEK": 1,</br>
+              "PLAYER_NAME": "Hideki Matsuyama",</br>
+              "EVENTS": 2,</br>
+              "MONEY": 2376000,</br>
+              "YTD_VICTORIES": 1</br>
+          </div>
+          <div class="sampleDataSubTitle">
+            },</br>
+            .</br>
+            .</br>
+            .</br>
+          </div>
+    </p>
+
+    </div>
+
+  </main>
+</body>
+</html>
